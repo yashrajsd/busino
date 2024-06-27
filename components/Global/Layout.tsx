@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [slide, setSlide] = useState(true);
+  const [slide, setSlide] = useState(false);
 
   return (
     <div className="flex">
