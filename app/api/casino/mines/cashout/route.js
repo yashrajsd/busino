@@ -22,7 +22,7 @@ export async function PUT(req){
         const updatedSession = await prisma.gameSession.update({
             where: {
                 userId: userId,
-                gameId: gameId
+                gameId: gameSession
             },
             data: {
                 endedAt: new Date()

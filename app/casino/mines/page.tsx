@@ -3,7 +3,7 @@ import TuneIcon from '@mui/icons-material/Tune';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import StarOutlineOutlinedIcon from '@mui/icons-material/StarOutlineOutlined';
 import StarIcon from '@mui/icons-material/Star';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Mines from '@/components/casino/mines/Mines';
 
 const subOptions=[
@@ -39,21 +39,27 @@ export default function Home() {
   const [gameSession,setGameSession] = useState(null)
   const [loading,setLoading] = useState(true);
 
+  const setClickedCallback = useCallback((clickedMines:any) => {
+    setClicked(clickedMines);
+  }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetch(`http://localhost:3000/api/casino/mines?userId=1&gameId=1`)
-    .then(response => response.json())
-    .then(data => {
-      setActive(data.active)
-      if(data.active){
-        setClicked(data.clickedMine)
-        setGameSession(data.id)
-        
-      }
-    })
-    .catch(error => console.error('Error:', error));
-    setLoading(false);
-  },[])
+      .then(response => response.json())
+      .then(data => {
+        setActive(data.active);
+        if (data.active) {
+          setClickedCallback(data.clickedMine);
+          setGameSession(data.id);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setLoading(false);
+      });
+  }, [setClickedCallback]);
+
 
   const handleBettingAmount =()=>{
 
