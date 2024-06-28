@@ -60,9 +60,9 @@ const Sidebar: React.FC<SidebarProps> = ({ slide,setSlide }) => {
             <div className=" rounded-md ">
                 <h1 className={`font-bold text-white mb-[1rem] text-[0.85rem] ${slide ? ('block'):('hidden')}`}>Games</h1>
                 <div className="flex flex-col gap-[1.2rem]">
-                {navgames.map((game)=>{
+                {navgames.map((game,index)=>{
                     return(
-                        <div className="w-[100%]">
+                        <div className="w-[100%]" key={index}>
                             <span className={`duration-300 hover:translate-y-[-0.2rem] rounded-md hover:bg-[#374151]  flex gap-[0.8em] items-center ${!slide && ('justify-center')}  text-white text-[0.9rem] font-semibold cursor-pointer`}>
                                 <span className="bg-[#374151]g p-[0.4rem] px-[0.6rem] rounded-md">
                                 <game.icon className={`${slide ? ('text-[0.9rem]'):('text-[1.2rem]')}`}/>
@@ -79,9 +79,9 @@ const Sidebar: React.FC<SidebarProps> = ({ slide,setSlide }) => {
             <div className=" rounded-md ">
                 <h1 className={`font-bold text-white mb-[1rem] text-[0.85rem] ${slide ? ('block'):('hidden')}`}>Other Options</h1>
                 <div className="flex flex-col gap-[1.2rem]">
-                {navbtns.map((game)=>{
+                {navbtns.map((game,index)=>{
                     return(
-                        <div className="w-[100%]">
+                        <div className="w-[100%]" key={index}>
                             <span className={`duration-300 hover:translate-y-[-0.2rem] rounded-md hover:bg-[#374151]  flex gap-[0.8em] ${!slide && ('justify-center')} items-center jusitfy-center text-white text-[0.9rem] font-semibold cursor-pointer`}>
                                 <span className=" p-[0.4rem] px-[0.6rem] flex rounded-md">
                                 <game.icon className={`${slide ? ('text-[0.9rem]'):('text-[1.2rem]')}`}/>

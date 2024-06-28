@@ -120,9 +120,9 @@ export default function Home() {
                     <p className='font-semibold text-white text-[0.9rem] mb-[0.5rem]'>No. of mines</p>
                     <select disabled={active} className='w-[100%] bg-[#343A42] text-white font-semibold p-[0.4rem] focus:outline-none rounded-md' value={mines} onChange={(e)=>{setMines(parseInt(e.target.value))}}>
                       <option selected hidden disabled value={0}>0</option>
-                      {minesOpt.map((num)=>{
+                      {minesOpt.map((num,index)=>{
                         return(
-                          <option value={num}>{num}</option>
+                          <option key={index} value={num}>{num}</option>
                         )
                       })}
                     </select>
@@ -165,9 +165,9 @@ export default function Home() {
           </div>
           <div className="flex-1 bg-[#5875FF]">
             <ul className='flex text-white h-[100%] items-center gap-[1rem] px-[1rem]'>
-              {subOptions.map((Item)=>{
+              {subOptions.map((Item,index)=>{
                 return(
-                  <li className='p-[0.4rem] duration-300 hover:bg-[#859BFF] cursor-pointer rounded-md'>
+                  <li key={index} className='p-[0.4rem] duration-300 hover:bg-[#859BFF] cursor-pointer rounded-md'>
                     <Item className='lg:text-[1.2rem]'/>
                   </li>
                 )
