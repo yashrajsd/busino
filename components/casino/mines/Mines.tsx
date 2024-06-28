@@ -3,7 +3,6 @@ import Image from 'next/image';
 import purpleGem from '../../../utils/images/mines/purplegem.png';
 import bomb from '../../../utils/images/mines/bomb.png';
 
-
 const generatedMine = [
     1, 1, 0, 1, 0,
     0, 1, 1, 0, 0,
@@ -12,30 +11,58 @@ const generatedMine = [
     1, 0, 0, 1, 1
 ];
 
+interface MinesProps {
+    clicked: boolean[];
+    gameSession: number | null;
+    active:boolean;
+    setClicked: React.Dispatch<React.SetStateAction<boolean[]>>;
+}
 
+const Mines: React.FC<MinesProps> = ({ setClicked, clicked, gameSession,active }) => {
+    const [game, setGame] = useState<number[]>(generatedMine);
 
-export default function Mines() {
-    const [clicked, setClicked] = useState(Array(generatedMine.length).fill(false));
-    const [game,setGame] = useState(generatedMine)
+    useEffect(() => {
+        // You can fetch initial game state here if needed
+        // Example fetch:
+        // fetch(`http://localhost:3000/api/casino/mines?bombs=${7}`)
+        //     .then(response => response.json())
+        //     .then(data => setGame(data.array))
+        //     .catch(error => console.error('Error:', error));
 
-    useEffect(()=>{
-        fetch(`http://localhost:3000/api/casino/mines?bombs=${7}`)
-        .then(response => response.json())
-        .then(data => setGame(data.array))
-        .catch(error => console.error('Error:', error));
-    },[])
+        // Initialize clicked array to match game array length
+        setClicked(new Array(game.length).fill(false));
+    }, []);
 
-    const handleClick = (index: number) => {
-        setClicked(prevState => {
-            const newClicked = [...prevState];
-            if (!newClicked[index] && generatedMine[index] === 1) {
-                
+    const handleClick = async (index: number) => {
+        if(!active)return
+        try {
+            if (gameSession === null) {
+                throw new Error('No active game session');
             }
-            newClicked[index] = true;
-            return newClicked;
-        });
-    };
 
+            const response = await fetch("http://localhost:3000/api/casino/mines/click", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ gameSession, index }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            setClicked(prevClicked => {
+                const newClicked = [...prevClicked];
+                newClicked[index] = true;
+                return newClicked;
+            });
+            // alert("Success!");
+        } catch (error) {
+            console.error('Error:', error);
+    
+        }
+    };
 
     return (
         <div className="h-[42vw] w-[42vw] bg-gray-900 grid grid-cols-5 grid-rows-5 gap-1 p-1">
@@ -54,10 +81,12 @@ export default function Mines() {
                             className='w-3/4 h-3/4'
                         />
                     ) : (
-                        <div className="w-3/4 h-3/4 bg-gray-600"></div> 
+                        <div className="w-3/4 h-3/4 bg-gray-600"></div>
                     )}
                 </div>
             ))}
         </div>
     );
-}
+};
+
+export default Mines;

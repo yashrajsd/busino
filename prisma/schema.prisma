@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -13,83 +8,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id        Int                 @id @default(autoincrement())
-  username  String              @unique
-  password  String
-  name      String?
-  email     String              @unique
-  phone     String?             @unique
-  DOB       DateTime?
-  // wallet    Wallet?
-  createdAt DateTime            @default(now())   @map("created_at")
-  updatedAt DateTime            @updatedAt        @map("updated_at")
-  // sessions  Session[]
+model User {
+  id           Int             @id @default(autoincrement())
+  username     String          @unique
+  password     String
+  name         String?
+  email        String          @unique
+  phone        String?         @unique
+  DOB          DateTime?
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
   gameSessions GameSession[]
-  profit    Float?
-  lost      Float?
-  // VerificationToken VerificationToken[]
+  profit       Float?
+  lost         Float?
 }
 
 model Game {
-  id           Int              @id @default(autoincrement())
-  name         String           @unique
-  createdAt    DateTime         @default(now())
-  endedAt      DateTime         
-  gameSessions GameSession[]  
+  id           Int             @id @default(autoincrement())
+  name         String          @unique
+  gameSessions GameSession[]
 }
 
-
 model GameSession {
-  id           Int              @id @default(autoincrement())
+  id           Int             @id @default(autoincrement())
   userId       Int
-  gameId       Int     
+  gameId       Int
   betAmount    Float
   status       String
   result       String
-  createdAt    DateTime         @default(now())
-  endedAt      DateTime         
-  user         User             @relation(fields: [userId], references: [id])
-  game         Game             @relation(fields: [gameId], references: [id])
-  mineGame     MineGame?  
+  createdAt    DateTime        @default(now())
+  endedAt      DateTime?
+  user         User            @relation(fields: [userId], references: [id])
+  game         Game            @relation(fields: [gameId], references: [id])
+  mineGame     MineGame?
 }
 
 model MineGame {
-  id        String    @id @default(uuid())
-  userId    Int
-  mines     Int[]
-  startedAt DateTime    @default(now())
-  endedAt   DateTime?
-  gameId    Int       @unique
-  game      GameSession      @relation(fields: [gameId], references: [id])
+  id           String          @id @default(uuid())
+  userId       Int
+  bomb         Int
+  mines        Int[]
+  clickedMine  Boolean[]
+  startedAt    DateTime        @default(now())
+  endedAt      DateTime?
+  gameId       Int             @unique
+  game         GameSession     @relation(fields: [gameId], references: [id])
 }
-
-// model Wallet{
-//   id            Int             @id @default(autoincrement())
-//   owner         User            @relation(fields: [ownerId],references: [id])
-//   updatedAt     DateTime        @updatedAt
-//   ownerId       Int             @unique
-//   value         Decimal         @db.Decimal(20, 8)
-// }
-
-// model Session{
-//   id          String            @id @default(uuid())
-//   createdAt   DateTime          @default(now())         @map("created_at")
-//   updatedAt   DateTime          @updatedAt              @map("updated_at")
-//   expiredAt   DateTime  
-//   handle      String            @unique
-//   userId      Int
-//   user        User?             @relation(fields: [userId],references: [id])
-// }
-
-// model VerificationToken{
-//   id          String    @id @default(uuid())
-//   createdAt   DateTime  @default(now())       @map("")
-// }
-
-
-
-
-
-
-
