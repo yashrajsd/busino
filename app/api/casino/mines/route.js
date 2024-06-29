@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
+// putting a bet
 export async function POST(req) {
     try {
         const { bombs, userId, betAmount } = await req.json();
@@ -24,16 +25,26 @@ export async function POST(req) {
             }
         });
 
-        const mineGame = await prisma.mineGame.create({
+        const response = await prisma.mineCR.findUnique({
+            where:{
+                id:bombs
+            }
+        })
+
+
+        
+        await prisma.mineGame.create({
             data: {
                 userId: userId,
                 mines: array,
                 clickedMine: new Array(25).fill(false),
                 startedAt: new Date(),
                 gameId: gameSession.id,
-                bomb: bombs 
+                bomb: bombs,
+                ppc:response.p 
             }
         });
+
 
         const active = true;
 

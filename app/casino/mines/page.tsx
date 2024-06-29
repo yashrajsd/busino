@@ -188,7 +188,7 @@ export default function Home() {
             </div>
             </div>
             <div className='flex-1 flex justify-center items-center'>
-              <Mines setClicked={setClicked} clicked={clicked} gameSession={gameSession} active={active}/>
+              <Mines setClicked={setClicked} setActive={setActive} clicked={clicked} gameSession={gameSession} active={active}/>
             </div>
           </div>
           <div className="flex-1 bg-[#5875FF]">

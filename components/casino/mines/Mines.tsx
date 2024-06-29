@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import purpleGem from '../../../utils/images/mines/purplegem.png';
 import bomb from '../../../utils/images/mines/bomb.png';
@@ -16,10 +16,12 @@ interface MinesProps {
     gameSession: number | null;
     active:boolean;
     setClicked: React.Dispatch<React.SetStateAction<boolean[]>>;
+    setActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Mines: React.FC<MinesProps> = ({ setClicked, clicked, gameSession,active }) => {
+const Mines: React.FC<MinesProps> = ({ setClicked, clicked, gameSession,active ,setActive}) => {
     const [game, setGame] = useState<number[]>(generatedMine);
+    const [ended,setEnded] = useState(false);
 
     useEffect(() => {
         // You can fetch initial game state here if needed
@@ -34,7 +36,7 @@ const Mines: React.FC<MinesProps> = ({ setClicked, clicked, gameSession,active }
     }, []);
 
     const handleClick = async (index: number) => {
-        if(!active)return
+        if(!active || ended)return
         try {
             if (gameSession === null) {
                 throw new Error('No active game session');
@@ -48,8 +50,19 @@ const Mines: React.FC<MinesProps> = ({ setClicked, clicked, gameSession,active }
                 body: JSON.stringify({ gameSession, index }),
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            // if (!response.ok) {
+            //     throw new Error('Network response was not ok');
+            // }
+            const data = await response.json()
+            if(data.status==400){
+                setClicked(prevClicked => {
+                    const newClicked = [...prevClicked];
+                    newClicked[index] = true;
+                    return newClicked;
+                });
+                setEnded(true)
+                // setActive(false);
+                return;
             }
 
             setClicked(prevClicked => {
@@ -78,7 +91,7 @@ const Mines: React.FC<MinesProps> = ({ setClicked, clicked, gameSession,active }
                         <Image
                             src={item === 1 ? purpleGem : bomb}
                             alt='item'
-                            className='w-3/4 h-3/4'
+                            className={`w-3/4 h-3/4 ${ended && ('opacity-10')}`}
                         />
                     ) : (
                         <div className="w-3/4 h-3/4 bg-gray-600"></div>

@@ -38,9 +38,10 @@ model GameSession {
   result       String
   createdAt    DateTime        @default(now())
   endedAt      DateTime?
-  user         User            @relation(fields: [userId], references: [id])
-  game         Game            @relation(fields: [gameId], references: [id])
+  user         User            @relation(fields: [userId], references: [id],onDelete: Cascade)
+  game         Game            @relation(fields: [gameId], references: [id],onDelete: Cascade)
   mineGame     MineGame?
+  profit       Float?          @default(1.00)
 }
 
 model MineGame {
@@ -50,7 +51,15 @@ model MineGame {
   mines        Int[]
   clickedMine  Boolean[]
   startedAt    DateTime        @default(now())
-  endedAt      DateTime?
+  endedAt      DateTime?       
   gameId       Int             @unique
-  game         GameSession     @relation(fields: [gameId], references: [id])
+  game         GameSession     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  ppc          Float  
 }
+
+model mineCR{
+  id           Int             @id @default(autoincrement())
+  p            Float
+  bombs        Int             @unique
+}
+

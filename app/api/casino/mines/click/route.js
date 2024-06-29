@@ -4,28 +4,62 @@ const prisma = new PrismaClient();
 export async function POST(req) {
     try {
         const { gameSession, index} = await req.json();
-
-        const response = await prisma.mineGame.findUnique({
-            where:{
-                id:gameSession
-            }
-        })
-
         
-        if(!response){
-            throw new Error('Game session not found')
+        const response = await prisma.gameSession.findFirst({
+            where: {
+              mineGame: {
+                id: gameSession, 
+              },
+            },
+            include: {
+              mineGame: true, 
+            },
+          });
+          console.log(response.mineGame)
+        const {mines,bomb,ppc,clickedMine} = response.mineGame
+        console.log(bomb)
+        
+        
+        
+        
+
+        if(mines[index]==1){
+            await prisma.gameSession.update({
+                where:{
+                    id:response.id
+                },
+                data:{
+                    result:"loss",
+                    profit:0,
+                    endedAt:new Date()
+                }
+            })
+            return NextResponse.json({status:400,message:"bomb detected"})
         }
 
-        const {clickedMine} = response
-
+        // if(!response){
+        //     throw new Error('Game session not found')
+        // }
+        let clicked = clickedMine.filter(value => value === true).length;
+        const profitPercent = response.profit+ppc/(25-bomb-clicked);
         clickedMine[index] = true
 
-        await prisma.mineGame.update({
+        await prisma.gameSession.update({
             where:{
-                id:gameSession
+                id:response.id
             },
             data:{
-                clickedMine:clickedMine
+                profit:profitPercent
+            }
+        })
+        // console.log("Hello")
+        // console.log(response.mineGame?.id)
+        await prisma.mineGame.update({
+            where:{
+                id:response.mineGame?.id
+            },
+            data:{
+                clickedMine:clickedMine,
             }
         })
 
