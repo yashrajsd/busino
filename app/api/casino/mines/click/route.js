@@ -7,10 +7,11 @@ export async function POST(req) {
 
         const response = await prisma.mineGame.findUnique({
             where:{
-                gameId:gameSession
+                id:gameSession
             }
         })
 
+        
         if(!response){
             throw new Error('Game session not found')
         }
@@ -21,7 +22,7 @@ export async function POST(req) {
 
         await prisma.mineGame.update({
             where:{
-                gameId:gameSession
+                id:gameSession
             },
             data:{
                 clickedMine:clickedMine

@@ -65,10 +65,6 @@ export default function Home() {
 
   }
 
-  const betStart=()=>{
-    if(mines==0 || mines>25) return;
-    
-  }
 
   const handleLPer=(e:any)=>{
     if(!lReset){
@@ -82,21 +78,47 @@ export default function Home() {
     }
   }
 
-  const handleCashout=async()=>{
-    if(active){
-      const userId = 1;
-    const response = await fetch("http://localhost:3000/api/casino/mines/cashout", {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ gameSession, userId }),
-    });
-    if(response.status!==200) return alert("Error occured")
-    setActive(false)
-    setClicked(Array(generatedMine.length).fill(false)); 
+  const handleCashout = async () => {
+    if (active) {
+        const userId = 1;
+        const response = await fetch("http://localhost:3000/api/casino/mines/cashout", {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ gameSession, userId }),
+        });
+        if (response.status !== 200) return alert("Error occurred");
+        setActive(false);
+        setClicked(Array(generatedMine.length).fill(false));
+    } else {
+        if (mines == 0 || mines > 25) return;
+        const response = await fetch("http://localhost:3000/api/casino/mines", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ bombs: mines, userId: 1, betAmount: betAmt })
+        });
+        if (response.status !== 200) return alert("Something went wrong");
+
+        // Re-fetch game state after POST request
+        fetch(`http://localhost:3000/api/casino/mines?userId=1&gameId=1`)
+            .then(response => response.json())
+            .then(data => {
+                setActive(data.active);
+                if (data.active) {
+                    setClickedCallback(data.clickedMine);
+                    setGameSession(data.id);
+                }
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setLoading(false);
+            });
     }
-  }
+}
 
   return (
     <div className="w-[100%] flex flex-col justify-center items-center py-[2rem]">

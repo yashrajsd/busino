@@ -35,7 +35,9 @@ export async function POST(req) {
             }
         });
 
-        return NextResponse.json({ status: 200, message: 'Mine game created successfully' });
+        const active = true;
+
+        return NextResponse.json({ status: 200, active,message:'Mine created successfully'});
     } catch (error) {
         console.error("Error occurred:", error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -64,16 +66,18 @@ export async function GET(req) {
             }
         });
 
+        console.log(activeSession.id)
+
         if (!activeSession) {
             return NextResponse.json({ status: 404, active: false });
         }
 
         const clickedMine = activeSession.mineGame?.clickedMine || [];
-
+        console.log(activeSession.mineGame.id)
         return NextResponse.json({ 
             status: 200, 
             active: true,
-            id: activeSession.id,
+            id: activeSession.mineGame?.id,
             clickedMine: clickedMine 
         });
     } catch (error) {
