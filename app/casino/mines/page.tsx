@@ -2,15 +2,14 @@
 import TuneIcon from '@mui/icons-material/Tune';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import StarOutlineOutlinedIcon from '@mui/icons-material/StarOutlineOutlined';
-import StarIcon from '@mui/icons-material/Star';
 import { useCallback, useEffect, useState } from 'react';
 import Mines from '@/components/casino/mines/Mines';
 
-const subOptions=[
+const subOptions = [
   TuneIcon,
   QueryStatsIcon,
   StarOutlineOutlinedIcon
-]
+];
 
 const generatedMine = [
   1, 1, 0, 1, 0,
@@ -20,105 +19,113 @@ const generatedMine = [
   1, 0, 0, 1, 1
 ];
 
-const minesOpt =[
-  1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24
-]
+const minesOpt = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+];
 
 export default function Home() {
-
-  const [betAmt,setBetAmt] = useState(0.0);
-  const [mines,setMines] = useState(0);
-  const [auto,setAuto] = useState(false);
-  const [bets,setBets] = useState(0);
-  const [wReset,setWReset] = useState(true)
-  const [lReset,setLReset] = useState(true)
-  const [perW,setPerW] = useState(0);
-  const [perL,setPerL] = useState(0);
-  const [active,setActive] = useState(false);
+  const [betAmt, setBetAmt] = useState(0.0);
+  const [mines, setMines] = useState(0);
+  const [auto, setAuto] = useState(false);
+  const [bets, setBets] = useState(0);
+  const [wReset, setWReset] = useState(true);
+  const [lReset, setLReset] = useState(true);
+  const [perW, setPerW] = useState(0);
+  const [perL, setPerL] = useState(0);
+  const [active, setActive] = useState(false);
   const [clicked, setClicked] = useState(Array(generatedMine.length).fill(false));
-  const [gameSession,setGameSession] = useState(null)
-  const [loading,setLoading] = useState(true);
+  const [gameSession, setGameSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [profit,setProfit] = useState(0)
+  const [ended, setEnded] = useState(false);
 
-  const setClickedCallback = useCallback((clickedMines:any) => {
+  const fetchGameState = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/casino/mines?userId=1&gameId=1`);
+      const data = await response.json();
+      setActive(data.active);
+      if (data.active) {
+        setClickedCallback(data.clickedMine);
+        setGameSession(data.id);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error:', error);
+      setLoading(false);
+    }
+  };
+
+  const setClickedCallback = useCallback((clickedMines: any) => {
     setClicked(clickedMines);
   }, []);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/casino/mines?userId=1&gameId=1`)
-      .then(response => response.json())
-      .then(data => {
-        setActive(data.active);
-        if (data.active) {
-          setClickedCallback(data.clickedMine);
-          setGameSession(data.id);
-        }
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setLoading(false);
-      });
+    fetchGameState();
   }, [setClickedCallback]);
-
-
-  const handleBettingAmount =()=>{
-
-  }
-
-
-  const handleLPer=(e:any)=>{
-    if(!lReset){
-      setPerL(e.target.value)
-    }
-  }
-
-  const handleWPer=(e:any)=>{
-    if(!wReset){
-      setPerW(e.target.value)
-    }
-  }
 
   const handleCashout = async () => {
     if (active) {
-        const userId = 1;
+      try {
         const response = await fetch("http://localhost:3000/api/casino/mines/cashout", {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ gameSession, userId }),
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ gameSession, userId: 1 }),
         });
-        if (response.status !== 200) return alert("Error occurred");
+        if (response.status !== 200) {
+          alert("Error occurred");
+          return;
+        }
         setActive(false);
         setClicked(Array(generatedMine.length).fill(false));
+        setGameSession(null); // Clear the game session
+      } catch (error) {
+        alert("Error occurred");
+        console.error(error);
+      }
     } else {
-        if (mines == 0 || mines > 25) return;
+      if(ended)
+        setEnded(!ended)
+      setProfit(0.00)
+      if (mines === 0 || mines > 25) {
+        return;
+      }
+      try {
         const response = await fetch("http://localhost:3000/api/casino/mines", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ bombs: mines, userId: 1, betAmount: betAmt })
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ bombs: mines, userId: 1, betAmount: betAmt }),
         });
-        if (response.status !== 200) return alert("Something went wrong");
-
-        // Re-fetch game state after POST request
-        fetch(`http://localhost:3000/api/casino/mines?userId=1&gameId=1`)
-            .then(response => response.json())
-            .then(data => {
-                setActive(data.active);
-                if (data.active) {
-                    setClickedCallback(data.clickedMine);
-                    setGameSession(data.id);
-                }
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                setLoading(false);
-            });
+        if (response.status !== 200) {
+          alert("Something went wrong");
+          return;
+        }
+        fetchGameState();
+      } catch (error) {
+        alert("Error occurred");
+        console.error(error);
+      }
     }
-}
+  };
+
+  const handleBettingAmount = () => {
+    
+  };
+
+  const handleLPer = (e: any) => {
+    if (!lReset) {
+      setPerL(e.target.value);
+    }
+  };
+
+  const handleWPer = (e: any) => {
+    if (!wReset) {
+      setPerW(e.target.value);
+    }
+  };
 
   return (
     <div className="w-[100%] flex flex-col justify-center items-center py-[2rem]">
@@ -156,6 +163,12 @@ export default function Home() {
                     </select>
                     </div>
                     </div>
+                    {active && (
+                      <div className='w-[100%] '>
+                      <p className='font-semibold text-white text-[0.9rem] mb-[0.5rem]'>Profit ({profit})</p>
+                      <input type="number" step={'1'}  value={bets} placeholder='infinite' disabled={true} onChange={(e)=>{setBets(parseFloat(e.target.value))}} className='bg-[#343A42] w-[100%] font-semibold text-white focus:outline-none rounded-md p-[0.4rem]'/>
+                      </div>
+                    )}
                     <div className='flex flex-col gap-[1rem]'>
                       {auto && (
                         <>
@@ -188,7 +201,7 @@ export default function Home() {
             </div>
             </div>
             <div className='flex-1 flex justify-center items-center'>
-              <Mines setClicked={setClicked} setActive={setActive} clicked={clicked} gameSession={gameSession} active={active}/>
+              <Mines setEnded={setEnded} ended={ended} setProfit={setProfit} setClicked={setClicked} setActive={setActive} clicked={clicked} gameSession={gameSession} active={active}/>
             </div>
           </div>
           <div className="flex-1 bg-[#5875FF]">

@@ -95,7 +95,7 @@ export async function POST(req) {
         //     return clickedMine;
         // });
 
-        return NextResponse.json({ status: 200, updatedClickedMine: clickedMine });
+        return NextResponse.json({ status: 200, updatedClickedMine: clickedMine ,profit:profitPercent});
     } catch (error) {
         return NextResponse.json({ status: 500, error: error.message });
     }

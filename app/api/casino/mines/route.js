@@ -45,7 +45,7 @@ export async function POST(req) {
             }
         });
 
-
+        
         const active = true;
 
         return NextResponse.json({ status: 200, active,message:'Mine created successfully'});

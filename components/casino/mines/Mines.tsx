@@ -14,29 +14,25 @@ const generatedMine = [
 interface MinesProps {
     clicked: boolean[];
     gameSession: number | null;
-    active:boolean;
+    active: boolean;
     setClicked: React.Dispatch<React.SetStateAction<boolean[]>>;
     setActive: React.Dispatch<React.SetStateAction<boolean>>;
+    setProfit: React.Dispatch<React.SetStateAction<number>>;
+    setEnded: React.Dispatch<React.SetStateAction<boolean>>;
+    ended:boolean
 }
 
-const Mines: React.FC<MinesProps> = ({ setClicked, clicked, gameSession,active ,setActive}) => {
+const Mines: React.FC<MinesProps> = ({ setClicked, setEnded , clicked,setProfit, ended, gameSession, active, setActive }) => {
     const [game, setGame] = useState<number[]>(generatedMine);
-    const [ended,setEnded] = useState(false);
+    
 
     useEffect(() => {
-        // You can fetch initial game state here if needed
-        // Example fetch:
-        // fetch(`http://localhost:3000/api/casino/mines?bombs=${7}`)
-        //     .then(response => response.json())
-        //     .then(data => setGame(data.array))
-        //     .catch(error => console.error('Error:', error));
-
-        // Initialize clicked array to match game array length
         setClicked(new Array(game.length).fill(false));
-    }, []);
+    }, [game]);
 
     const handleClick = async (index: number) => {
-        if(!active || ended)return
+        if (!active || ended) return;
+
         try {
             if (gameSession === null) {
                 throw new Error('No active game session');
@@ -50,30 +46,28 @@ const Mines: React.FC<MinesProps> = ({ setClicked, clicked, gameSession,active ,
                 body: JSON.stringify({ gameSession, index }),
             });
 
-            // if (!response.ok) {
-            //     throw new Error('Network response was not ok');
-            // }
-            const data = await response.json()
-            if(data.status==400){
+            const data = await response.json();
+            if (data.status == 400) {
                 setClicked(prevClicked => {
                     const newClicked = [...prevClicked];
                     newClicked[index] = true;
                     return newClicked;
                 });
-                setEnded(true)
-                // setActive(false);
+                setEnded(true);
+                setActive(false);
                 return;
             }
+
 
             setClicked(prevClicked => {
                 const newClicked = [...prevClicked];
                 newClicked[index] = true;
                 return newClicked;
             });
-            // alert("Success!");
+
+            setProfit(data.profit)
         } catch (error) {
             console.error('Error:', error);
-    
         }
     };
 
