@@ -17,7 +17,7 @@ export const GameContent = () => {
         setMultiplier(parseFloat(value.toFixed(2)));
         const chance = (99/value);
         setWinChance(chance);
-        console.log("multiplier updated: ", targetMultiplier);
+        console.log("multiplier updated: ", parseFloat(value.toFixed(2)));
     }
 
     const updateWinchance = (e: React.ChangeEvent<HTMLInputElement>) => {
