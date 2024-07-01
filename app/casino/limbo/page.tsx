@@ -9,9 +9,11 @@ import { limboContext } from "@/Context/limboContext";
 const Limbo = () => {
 
     const [targetMultiplier, setMultiplier] = useState(2.00);
+    const [result, setResult] = useState(1);
+    const [toAnimate, setToAnimate] = useState(false);
 
     return (
-        <limboContext.Provider value={{targetMultiplier, setMultiplier}}>
+        <limboContext.Provider value={{targetMultiplier, setMultiplier, result, setResult, toAnimate, setToAnimate}}>
             <GameWrapper>
                 <div className="grid grid-cols-12">
                     <div className="col-span-3">
