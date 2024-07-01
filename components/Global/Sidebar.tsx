@@ -10,42 +10,42 @@ import CasinoIcon from '@mui/icons-material/Casino';
 import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
 import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown';
 interface SidebarProps {
-  slide: boolean;
-  setSlide: React.Dispatch<React.SetStateAction<boolean>>;
+    slide: boolean;
+    setSlide: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const navgames = [
-  {
-      icon:CasinoIcon,
-      title:'Casino'
-  },
-  {
-      icon:SportsBasketballIcon,
-      title:'Sports'
-  },
-  {
-      icon:ThumbsUpDownIcon,
-      title:'Elections'
-  }
+    {
+        icon: CasinoIcon,
+        title: 'Casino'
+    },
+    {
+        icon: SportsBasketballIcon,
+        title: 'Sports'
+    },
+    {
+        icon: ThumbsUpDownIcon,
+        title: 'Elections'
+    }
 ]
 
 const navbtns = [
-  {
-      icon:SkateboardingIcon,
-      title:"Leaderboard"
-  },
-  {
-      icon:AutoAwesomeIcon,
-      title:"Vip Club"
-  },
-  {
-      icon:StyleIcon,
-      title:"Blogs"
-  },
-  {
-      icon:ForumIcon,
-      title:"Forum"
-  }
+    {
+        icon: SkateboardingIcon,
+        title: "Leaderboard"
+    },
+    {
+        icon: AutoAwesomeIcon,
+        title: "Vip Club"
+    },
+    {
+        icon: StyleIcon,
+        title: "Blogs"
+    },
+    {
+        icon: ForumIcon,
+        title: "Forum"
+    }
 ]
 
 const Sidebar: React.FC<SidebarProps> = ({ slide,setSlide }) => {
@@ -91,14 +91,11 @@ const Sidebar: React.FC<SidebarProps> = ({ slide,setSlide }) => {
                                 </h5>
                             </span>
                         </div>
-                    )
-                })}
+                    </div>
                 </div>
             </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Sidebar;
