@@ -18,10 +18,6 @@ export async function POST(req) {
           console.log(response.mineGame)
         const {mines,bomb,ppc,clickedMine} = response.mineGame
         console.log(bomb)
-        
-        
-        
-        
 
         if(mines[index]==1){
             await prisma.gameSession.update({
@@ -63,39 +59,7 @@ export async function POST(req) {
             }
         })
 
-        // Validate input
-        // if (typeof userId !== 'number' || typeof gameId !== 'number' || typeof index !== 'number' || typeof newValue !== 'boolean') {
-        //     return NextResponse.json({ status: 400, error: 'Invalid input' });
-        // }
-
-        // const result = await prisma.$transaction(async (tx) => {
-        //     // const session = await tx.mineGame.findUnique({
-        //     //     where: {
-        //     //         gameId: gameSession,
-        //     //     },
-        //     // });
-
-        //     // if (!session) {
-        //     //     throw new Error('Game session not found');
-        //     // }
-
-        //     // const { clickedMine } = session;
-
-        //     // clickedMine[index] = newValue;
-
-        //     // await tx.mineGame.update({
-        //     //     where: {
-        //     //         gameId: gameSession,
-        //     //     },
-        //     //     data: {
-        //     //         clickedMine: clickedMine,
-        //     //     },
-        //     // });
-
-        //     return clickedMine;
-        // });
-
-        return NextResponse.json({ status: 200, updatedClickedMine: clickedMine ,profit:profitPercent});
+        return NextResponse.json({ status: 200, updatedClickedMine: clickedMine ,profit:profitPercent.toFixed(2)});
     } catch (error) {
         return NextResponse.json({ status: 500, error: error.message });
     }
