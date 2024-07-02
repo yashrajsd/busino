@@ -5,15 +5,17 @@ import { AnimatedCounter } from "./AnimatedCounter";
 
 export const GameContent = () => {
     //todo implement a api call to get the multiplier
-    const { result, toAnimate } = useContext(limboContext);
-    console.log("result from gameContext: ", result);
-    const [winChance, setWinChance] = useState(49.5);
+    const serverResult = 5.00;
+    const formattedServerResult = serverResult.toFixed(2);
+
+    const [winChance, setWinChance] = useState(50.00);
+
     const { targetMultiplier, setMultiplier } = useContext(limboContext);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseFloat(e.target.value);
         setMultiplier(parseFloat(value.toFixed(2)));
-        const chance = (99 / value);
+        const chance = (99/value);
         setWinChance(chance);
         console.log("multiplier updated: ", parseFloat(value.toFixed(2)));
     }
@@ -21,21 +23,14 @@ export const GameContent = () => {
     const updateWinchance = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = parseFloat(e.target.value);
         setWinChance(value);
-        const newMultiplier = (99 / value);
+        const newMultiplier = (99/value);
         setMultiplier(newMultiplier);
     }
 
     return (
         <div className="h-full bg-[#16191f] p-4">
             <div className="flex justify-center items-center h-[500px]">
-                {!toAnimate ?
-                    <div>
-                        <span className="text-white font-semibold text-9xl">1.00</span>
-                        <div className="icons8-close mt-4"></div>
-                    </div>
-                    :
-                    <AnimatedCounter initial={1.00} final={result} />
-                }
+                <AnimatedCounter initial={1.00} final={serverResult}/>
             </div>
             <div className="grid grid-cols-2 p-4 bg-[#22272E] gap-3 rounded-md">
                 <div className="col-span-1">

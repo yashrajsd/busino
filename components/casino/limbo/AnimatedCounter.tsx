@@ -1,5 +1,5 @@
-import { animate, KeyframeOptions } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { animate, KeyframeOptions, useIsomorphicLayoutEffect } from "framer-motion";
+import { useRef } from "react";
 
 interface AnimatedCounterProps {
     initial: number,
@@ -10,7 +10,7 @@ interface AnimatedCounterProps {
 export const AnimatedCounter = ({ initial, final, animateOption }: AnimatedCounterProps) => {
     const ref = useRef<HTMLSpanElement>(null);
 
-    useEffect(() => {
+    useIsomorphicLayoutEffect(() => {
         const element = ref.current!;
         if (!element) console.log("no element if referenced");
 
@@ -25,7 +25,7 @@ export const AnimatedCounter = ({ initial, final, animateOption }: AnimatedCount
             }
         })
 
-    }, [final]);
+    }, []);
 
     return (
         <div className="flex items-center justify-center">
