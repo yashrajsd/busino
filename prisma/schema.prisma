@@ -41,6 +41,7 @@ model GameSession {
   user         User            @relation(fields: [userId], references: [id],onDelete: Cascade)
   game         Game            @relation(fields: [gameId], references: [id],onDelete: Cascade)
   mineGame     MineGame?
+  limbo        Limbo?
   profit       Float?          @default(1.00)
 }
 
@@ -61,5 +62,13 @@ model mineCR{
   id           Int             @id @default(autoincrement())
   p            Float
   bombs        Int             @unique
+}
+
+model Limbo{
+  id          Int              @id  @default(autoincrement())
+  tmultiplier Float            @default(0.00)
+  result      Float            @default(0.00)
+  gameId      Int              @unique
+  game        GameSession      @relation(fields: [gameId],references: [id])
 }
 
