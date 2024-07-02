@@ -77,8 +77,8 @@ const Mines: React.FC<MinesProps> = ({ setClicked, setEnded , clicked,setProfit,
                 <div
                     key={index}
                     className={`w-full h-full flex items-center justify-center border border-gray-700 
-                                ${clicked[index] ? 'bg-gray-800' : 'bg-gray-600 hover:bg-gray-500 cursor-pointer'}
-                                transition-all duration-300 ease-in-out`}
+                                ${clicked[index] ? 'bg-gray-800' : 'bg-gray-600 hover:bg-gray-500 cursor-pointer hover:scale-110 hover:shadow-indigo-500/50'}
+                                transition-all duration-300 ease-in-out rounded-md shadow-2xl `}
                     onClick={() => handleClick(index)}
                 >
                     {clicked[index] ? (
