@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { limboContext } from "@/Context/limboContext";
 import { AnimatedCounter } from "./AnimatedCounter";
+import { ResultHistory } from "../ResultHistory";
 
 
 export const GameContent = () => {
@@ -27,6 +28,9 @@ export const GameContent = () => {
 
     return (
         <div className="h-full bg-[#16191f] p-4">
+            <div className="flex justify-end">
+                <ResultHistory />
+            </div>
             <div className="flex justify-center items-center h-[500px]">
                 {!toAnimate ?
                     <div>
@@ -34,7 +38,7 @@ export const GameContent = () => {
                         <div className="icons8-close mt-4"></div>
                     </div>
                     :
-                    <AnimatedCounter initial={1.00} final={result} />
+                    <AnimatedCounter initial={1.00} final={result} isWinner={result >= targetMultiplier} />
                 }
             </div>
             <div className="grid grid-cols-2 p-4 bg-[#22272E] gap-3 rounded-md">
